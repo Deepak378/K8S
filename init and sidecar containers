@@ -1,0 +1,52 @@
+Init Container
+==============================
+#vim init.yml
+apiVersion: v1
+kind: Pod
+metadata:
+ name: web-pod
+spec:
+ volumes:
+ - name: myvol
+   emptyDir: {}
+ containers:
+ - name: maincontainer
+   image: nginx
+   volumeMounts:
+   - name: myvol
+     mountPath: /usr/share/nginx/html
+ initContainers:
+ - name: init1
+   image: busybox
+   command: ["wget","-O","/webfolder/index.html","https://download.docker.com/linux/centos/docker-ce.repo"]
+   volumeMounts:
+   - name: myvol
+     mountPath: /webfolder 
+
+=============================================================================================================================================================
+Kubernetes sidecar containers:-
+==============================================================================================================================================================
+apiVersion: v1
+kind: Pod
+metadata:
+  name: webserver
+spec:
+  volumes:
+    - name: website-vol
+      emptyDir: {}
+
+  containers:
+    - name: nginx
+      image: nginx
+      volumeMounts:
+        - name: website-vol
+          mountPath: /usr/share/nginx/html
+
+    - name: sidecar-container
+      image: busybox
+      command: ["sh","-c","while true; do git clone https://github.com/Deepak378/webpage; sleep 10;cd webpage;cp * /downloadweb/;done"]
+      volumeMounts:
+        - name: website-vol
+          mountPath: /downloadweb
+============================================================================================================================================================
+ kubectl exec -it multi-pod -c memcached /bin/sh
