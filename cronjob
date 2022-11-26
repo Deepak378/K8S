@@ -1,0 +1,59 @@
+cron job:-----
+       job scheduling:---
+       
+       time stamp:---
+       ----------------
+       minutes                hours                     <day_of_the_month>              <month>                <day_of_the_week>           task
+        1                               2                                       3                                         4                                   5
+        (0-59)                    (0-23)                              (1-31)                                     (1-12)                        (0-7)        0/7------ sunday, 1---monday, 2-tuesday ------- 6--staturday
+        
+         25th nov friday at 1:22pm
+         22                            13                                   25                                       11                                   5                               task
+         
+         evrey 25th nov at 1:22pm
+         22                            13                                   25                                       11                                   *                              task
+         
+          evrey day of nov  at 1:22pm
+         22                            13                                   *                                      11                                   *                              task
+         
+          evrey day at 1:22pm
+         22                            13                                   *                                     *                                   *                              task
+         
+         evrey  2 hours
+         *                           */2                                   *                                     *                                   *                              task
+         
+         evrey minute
+          *                           *                                  *                                     *                                   *                              task
+          
+            */1                           *                                   *                                     *                                   *                              task
+  
+  every 1st jan at 6:00pm
+  
+           0                                 18                                1                                   1                                      *
+  
+  
+  
+  
+  $ kubectl  explain  cronjob |less          
+            
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+ name: my-cronjob
+spec:
+ schedule: "* * * * *"       # for every one minute
+ jobTemplate:
+  spec:
+   template:
+    spec:
+     containers:
+     - name: my-cronjob
+       image: busybox:1.28
+       imagePullPolicy: IfNotPresent
+       command:
+       - /bin/sh
+       - -c
+       - date; pwd;  echo Hello from kubernetes cluster
+     restartPolicy: OnFailure
+     
+     $ kubectl  get cronjob
