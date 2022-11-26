@@ -10,7 +10,7 @@ Contents:
 7.  Daemonsets
 8.  Manual scheduling, Node Selector
 9.  Taints and Tolerations
-10. Environment Variable from plain-key,CM,secret
+10. Environment Variable from plain-key,Config-Map,secret
 11. Services
 12. Deployments
 13. Namespaces (ResourceQuota  and limits)
