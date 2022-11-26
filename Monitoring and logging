@@ -1,0 +1,45 @@
+monitoring:------
+       -------------------------
+       basic commands:---
+       #kubectl logs <pod_name>   ------ to check the log of a pod
+       #kubectl logs <pod_name>  -c  <cont_name> ------ to check the log of a container
+       
+       grafana  with prometheus:------
+       
+       ----------------------------------
+       prometheus----- log collection tool
+       grafana ----- monitoring dash board tool
+       
+       $ git clone https://github.com/gauravkumar9130/grafana
+       $ cd grafana/
+       $ kubectl apply -f 1-prometheus/.
+       $ kubectl apply -f 2-grafana/.
+       $ kubectl  get ns     ------->>   monitoring ns will be created
+       $ kubectl get pods -n monitoring
+       $ kubectl get svc -n monitoring
+       
+       user------>  admin
+       pass:----->   admin
+       
+       dashboard----> import----> 6417----> import---->   prometheus-----> prometheus----> import
+       
+       
+       
+       
+       
+       
+       kubernetes dashboard:----- (monitoring tool)
+       ---------------------------------------
+       $ wget https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.3/aio/deploy/recommended.yaml
+       $ kubectl  create -f recommended.yaml
+       $ kubectl  get ns    ------->>> kubernetes-dashboard   ns will be created
+       ]$ kubectl get pods -n kubernetes-dashboard
+       $ kubectl get svc -n kubernetes-dashboard
+       
+       
+       to login in kubernetes-dashboard  ----- we need token against sa:---
+       ----------
+       $ kubectl get sa  -n kubernetes-dashboard
+       $ kubectl describe pods -n kubernetes-dashboard kubernetes-dashboard-5bd89d988-jqdnp|less
+       $ kubectl create clusterrolebinding clusterrole2  --clusterrole cluster-admin --serviceaccount kubernetes-dashboard:kubernetes-dashboard
+       $ kubectl create token -n kubernetes-dashboard kubernetes-dashboard    ------>>> to generate token 
