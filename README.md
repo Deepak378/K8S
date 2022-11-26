@@ -19,3 +19,4 @@ Contents:
 16. Monitoring and Dashboard
 17. Ingress
 18. Network Policy
+19. Init and SideCar containers
