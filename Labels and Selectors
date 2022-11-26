@@ -1,0 +1,62 @@
+================
+label-----  It helps to put a tag on any resource in k8s by which we can identify that resource very easily in k8s.
+
+       label------->>  key:value
+       pod1 ------->  sports=cricket   game=football    flower=lotus   fruit=banana
+                                
+                           we can't put different values for the same key for a same resource.
+                           pod1  -----------   game=football   game=cricket 
+labs:--- (for existing pod)
+=============
+# kubectl  get pods --show-labels 
+# kubectl label pod image-pod fruit=apple
+# kubectl label pod image-pod flower=lily game=hockey sports=basketball
+# kubectl label pod image-pod sports-         ------>>> to remove or withdraw label
+# kubectl label pod image-pod --overwrite flower=lotus
+
+for new pod:--
+-----------------
+apiVersion: v1
+kind: Pod
+metadata:
+ name: label-pod
+ labels:
+  fruit: apple
+  flower: lily
+  sports: football
+spec:
+ containers:
+ - name: xyz
+   image: nginx
+   imagePullPolicy: IfNotPresent
+
+# kubectl  run pod10000 --image nginx --image-pull-policy IfNotPresent --labels fruit=pineapple
+
+
+selector:
+==========
+It helps us to findout specific  types of resources on the basis of labels.
+
+types:---
+a> Equity/Equality based seletor:---
+      --------->>>  works on single key with single value
+      ex:----
+       kubectl get pods --selector flower=lily
+       kubectl get pods --selector flower=lily --show-labels 
+       
+       for opposite search:--
+       kubectl get pods --selector flower!=lily
+       kubectl get pods --selector flower!=lily --show-labels 
+      
+      
+b> Set based selector:----                           
+                             
+--------->>>  works on single key with  multiple values
+
+types of operator:--
+a> in --------- equal to
+b> notin ------- not equal to
+ex:----
+kubectl get pods --selector 'flower in(lily,lotus)'
+kubectl get pods --selector 'flower in(lily,lotus)' --show-labels 
+# kubectl get pods --selector 'flower notin(lily,lotus,marigold)' --show-labels    --------->>>> notin operator
