@@ -13,3 +13,5 @@ Contents:
 10. Environment Variable from plain-key,CM,secret
 11. Services
 12. Deployments
+13. Namespaces (ResourceQuota  and limits)
+14. Storage
