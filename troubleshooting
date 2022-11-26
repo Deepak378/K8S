@@ -1,0 +1,6 @@
+      # systemctl is-active kubelet
+      # systemctl is-enabled kubelet
+      # systemctl is-enabled crio
+      # systemctl is-active crio
+      # systemctl enable --now  crio
+      # systemctl enable --now  kubelet
