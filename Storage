@@ -1,0 +1,170 @@
+storage:----
+       
+       Types of storage:---
+       a> Ephemeral storage (temp storage):
+       _________________________________________________________________________________________________________________________________________________
+          ex:---  emptyDir:---
+                    ----------------
+                    labs:---
+apiVersion: v1                                                               
+kind: Pod                                                                    
+metadata:                                                                    
+ name: emptypod                                              
+spec:                                                                        
+ containers:                                                                 
+ - name: xyz                                                                 
+   image: nginx                                   
+   imagePullPolicy: IfNotPresent                                             
+   volumeMounts:                                                             
+   - name: india     # location will be /var/lib/kubelet/pods in worker node
+     mountPath: /mumbai                                                      
+ volumes:                                                                    
+ - name: india                                                               
+   emptyDir: {} 
+   
+   
+   
+   
+   
+       
+       b> Persistent storage (permanent storage)
+       ___________________________________________________________________________________________________________________________________________________
+       ex:--HostPath:--- (data as well as storage will available after deleting the pod also)
+             HostPath--- storage will be craeted on that worker node where pod will created
+       pv ---- (persistent volume)---- storage
+       
+       
+       pvc ----- (persistent volume claim)
+       pod
+       
+       
+       step-1 (create pv)
+       ---------------------------------------------
+        # kubectl  get pv
+        # kubectl  explain pv |less
+        
+        
+        
+apiVersion: v1  
+kind: PersistentVolume            
+metadata:       
+ name: pv1      
+spec:           
+ accessModes:   
+ - ReadWriteMany
+ storageClassName: csi-hostpath-sc
+ capacity:      
+  storage: "2Gi"
+ hostPath:      
+  path: /mumbai
+  
+  
+
+step-2 (for pvc)
+-------------------------------------------------------
+# kubectl explain pvc |less
+apiVersion: v1                    
+kind: PersistentVolumeClaim       
+metadata:         
+ name: pvc1       
+spec:             
+ accessModes:                     
+ - ReadWriteMany                  
+ storageClassName: csi-hostpath-sc
+ resources:       
+  requests:       
+   storage: "2Gi"
+
+
+
+step-3 
+create pod:--
+---------------------------------------------------------
+apiVersion: v1           
+kind: Pod                
+metadata:                
+ name: pv-pvc-pod        
+spec:                    
+ conatiners:             
+ - name: xyz             
+   image: nginx
+   imagePullPolicy: IfNotPresent
+   volumeMounts:         
+   - name: country       
+     mountPath: /india   
+ volumes:                
+ - name: country         
+   persistentVolumeClaim:
+    claimName: pvc1
+                         
+       
+       
+       
+     Central persistent storage:---
+     =======================================================================================================
+       (nfs-storage)
+       step-1 (for nfs)
+       ------------
+       # yum install nfs-utils* -y
+       ]# mkdir /thursday
+        # chmod 1777 /thursday/
+        # vim /etc/exports     --------->>> this file is responsible for nfs share
+        
+    /thursday       *(rw,sync)
+   
+      # systemctl enable nfs-server.service 
+      # systemctl start nfs-server.service 
+      # showmount -e 172.25.231.100    ----->> check nfs share with nfs server ip
+      
+      step-2 
+      (create pv)
+      ---------------------------------------
+apiVersion: v1    
+kind: PersistentVolume
+metadata:         
+ name: nfs-pv     
+spec:             
+ accessModes:     
+ - ReadWriteMany  
+ storageClassName: nfs-storage
+ capacity:        
+  storage: "3Gi"  
+ nfs:             
+  server: 172.25.231.100
+  path: /thursday
+
+step-3
+create pvc:--
+-------------------------------------------
+apiVersion: v1   
+kind: PersistentVolumeClaim   
+metadata:        
+ name: nfs-pvc   
+spec:            
+ accessModes:    
+ - ReadWriteMany 
+ storageClassName: nfs-storage
+ resources:      
+  requests:      
+   storage: "3Gi"
+   
+step-4
+create pod:
+---------------------------------------------------
+apiVersion: v1        
+kind: Pod             
+metadata:             
+ name: pod1           
+spec:                 
+ containers:          
+ - name: xyz          
+   image: nginx
+   imagePullPolicy: IfNotPresent
+   volumeMounts:      
+   - name: country    
+     mountPath: /bharat
+ volumes:             
+ - name: country      
+   persistentVolumeClaim:
+    claimName: nfs-pvc
+
