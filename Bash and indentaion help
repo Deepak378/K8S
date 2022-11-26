@@ -1,0 +1,17 @@
+ bash completion:----
+ # kubectl completion bash > ~/.kube/kube.sh
+ # source ~/.kube/kube.sh  ------------------>>> for temp change
+ # vim ~/.bashrc   ------------------------->>> for permanent change
+ source $HOME/.kube/kube.sh
+ 
+ 
+ 
+ 
+ indentaion help:---
+---------------------------
+#vim ~/.vimrc
+
+set ai
+set ts=2
+set et
+set cursorcolumn
