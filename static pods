@@ -1,0 +1,7 @@
+      static pod:---
+      ========
+      
+     ------->>> controlled by kubelet
+     ------->>>> locations:---  /etc/kubernetes/manifests
+     ------->>>> /var/lib/kubelet/config.yaml  ----- kubelet config file
+     # crictl ps
