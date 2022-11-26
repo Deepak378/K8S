@@ -24,3 +24,4 @@ Contents:
 21. Troubleshooting
 22. static pod
 23. Autoscaling
+24. Upgradation
