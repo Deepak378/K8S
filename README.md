@@ -22,3 +22,5 @@ Contents:
 19. Init and SideCar containers
 20. Cronjob
 21. Troubleshooting
+22. static pod
+23. Autoscaling
