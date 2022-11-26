@@ -17,3 +17,5 @@ Contents:
 14. Storage
 15. Security
 16. Monitoring and Dashboard
+17. Ingress
+18. Network Policy
