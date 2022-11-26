@@ -1,0 +1,97 @@
+Basic commands in k8s:----
+ ========================
+ 
+ # kubectl get nodes
+# kubectl get nodes -o wide
+# kubectl describe nodes master  | less
+]# kubectl  get pods
+
+
+How to create a pod:---
+---------------------------------
+There are two way we can create a pod:--
+a> command line:---
+# kubectl  run pod1 --image nginx 
+# kubectl describe pod pod1 |less
+# kubectl get pods -o wide 
+
+How to access  a pod:---
+----------
+# kubectl exec -it pod1 /bin/sh      --------->> for unix based image
+# kubectl exec -it pod1 /bin/bash      --------->> for linux based image
+# kubectl delete pod pod1 ---------->> to delete the pod
+
+
+how to create a pod via yml file:---
+===========================
+# kubectl explain pod | less
+
+apiVersion: v1
+kind: Pod
+metadata:
+ name: monday
+spec:
+ containers:
+ - name: test
+   image: nginx
+
+
+# kubectl  create -f mypod.yaml 
+# kubectl delete -f mypod.yaml
+
+ 
+For multi-container pod:-----
+
+apiVersion: v1      
+kind: Pod           
+metadata:           
+ name: multi-pod    
+spec:               
+ containers:        
+ - name: cont1      
+   image: nginx     
+                    
+ - name: cont2      
+   image: redis     
+                    
+ - name: cont3      
+   image: memcached
+~                   
+
+
+
+
+
+
+to access cont:---
+
+#kubectl exec -it  multi-pod    /bin/sh    ------->> cont1/default cont
+#kubectl exec -it  multi-pod  -c cont2   /bin/sh    ------->> cont2 cont
+#kubectl exec -it  multi-pod  -c cont3   /bin/sh    ------->> cont3 cont
+
+
+ImagePullPolicy:----
+-------------------------------
+How image will be pulled  to create pod.
+
+a> Always  ----- default policy
+b> IfNotPresent:----   best policy
+c> Never:---
+
+
+labs:---
+in yml  file:---
+-----------------
+apiVersion: v1                            
+kind: Pod                        
+metadata:                        
+ name: image-pod                          
+spec:                            
+ containers:                              
+ - name: xyz                              
+   image: nginx
+   imagePullPolicy: IfNotPresent
+
+
+or
+# kubectl  run pod1000 --image nginx --image-pull-policy IfNotPresent
