@@ -1,0 +1,66 @@
+ ingress
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------      
+       install ingress:--
+----------------------------------------------------------------------------------------------------------------------------------------------------------------    
+       $ git clone https://github.com/kubernetes/ingress-nginx
+       $ cd ingress-nginx/deploy/static/provider/cloud
+       $ kubectl apply -f deploy.yaml 
+       $ kubectl get ns   ------>>> ingress-nginx ns will be created
+       $ kubectl get svc -n ingress-nginx
+----------------------------------------------------------------------------------------------------------------------------------------------------------------       
+       step-2 (create apps)
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+       $ kubectl create deployment hotel --image=nginx --replicas 5
+       $ kubectl create deployment tea --image=nginx --replicas 5
+       $ kubectl create deployment  coffee --image=nginx --replicas 5
+       
+----------------------------------------------------------------------------------------------------------------------------------------------------------------       
+       step-3  (expose apps with clusterip)
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+       $ kubectl expose deployment hotel --target-port 80 --port 80 --name hotel-svc --type ClusterIP
+       $ kubectl expose deployment tea --target-port 80 --port 80 --name tea-svc --type ClusterIP
+       $ kubectl expose deployment coffee --target-port 80 --port 80 --name coffee-svc --type ClusterIP
+       
+ ----------------------------------------------------------------------------------------------------------------------------------------------------------------     
+       step-4 (create routing rule in ingress)
+ ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+       $ kubectl explain ingress | less
+       
+apiVersion: networking.k8s.io/v1           
+kind: Ingress
+metadata:
+ name: hotel-ingress
+ annotations:
+  kubernetes.io/ingress.class: nginx       
+spec:   
+ rules: 
+ - http:
+    paths:
+    - path: /   #we are declering main apps
+      pathType: Prefix 
+      backend:
+       service:
+        name: hotel-svc
+        port: 
+         number: 80
+        
+    - path: /tea   
+      pathType: Prefix
+      backend:
+       service:
+        name: tea-svc
+        port: 
+         number: 80
+    - path: /coffee  
+      pathType: Prefix
+      backend:
+       service:
+        name: coffee-svc
+        port: 
+         number: 80
+       
+========================================================================================================================================================       
+       
+       $ kubectl  get ingress
+       $ kubectl describe ingress hotel-ingress
