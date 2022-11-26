@@ -1,0 +1,108 @@
+ namespace:-----
+       
+       it will help us to isolate resources from one ns another ns.
+       these are the virtual clusters on the top physical k8s cluster.
+       
+    
+       How to create ns:---
+       --------------
+       # kubectl get pods
+       # kubectl get pods -n india
+       # kubectl get pods -A |less
+       # kubectl explain ns |less
+
+
+
+apiVersion: v1 
+kind: Namespace
+metadata:    
+ name: nepal
+ 
+ 
+ 
+ 
+ # kubectl create ns bhutan
+ 
+ To create a pod in bhutan ns
+ --------------------------------------------------
+ 
+apiVersion: v1                   
+kind: Pod                        
+metadata:                        
+ name: thimpu                    
+ namespace: bhutan               
+ lables:                         
+  fruit: mango                   
+  flower: lily                   
+spec:                            
+ containers:                     
+ - name: xyz                     
+   image: nginx
+   imagePullPolicy: IfNotPresent
+
+
+# kubectl exec -it -n bhutan thimpu /bin/sh      ------->>> access the pod from bhutan ns
+
+# kubectl run kathmandu --image nginx --image-pull-policy IfNotPresent -n nepal --labels fruit=apple
+
+
+
+How to change default ns:----
+=======================
+# kubectl  config set-context $(kubectl config current-context) --namespace=nepal
+# kubectl config get-contexts      -------->>>  to check the default ns name
+
+
+
+ResourceQuota in ns:-----
+---------------------
+By implementing  RQ--- 
+we can limit the no of resource (pods,service, deployments,replica) that can be created as  well as compute resource (memory, cpu) can be consumed 
+by that ns.
+    
+    for compute/ h/w resource limit:----
+    -----------------
+    requests-----  minimum
+    requests.cpu -----  10m
+    limits-------   maximum
+    
+    
+# kubectl  get resourcequotas 
+# kubectl  get resourcequotas -n nepal 
+# kubectl  explain resourcequotas  | less
+
+apiVersion: v1         
+kind: ResourceQuota    
+metadata:              
+ name: govt-quota      
+ namespace: nepal      
+spec:                  
+ hard:                 
+  pods: "5"            
+  services: "4"        
+  requests.cpu: "100m" 
+  requests.memory: "700Mi"
+  limits.cpu: "150m"   
+  limits.memory: "1200Mi"
+
+How to create a pod with resource limit:---
+---------------------------------
+apiVersion: v1       
+kind: Pod            
+metadata:            
+ name: morning       
+ namespace: nepal    
+spec:                
+ containers:         
+ - name: xyz         
+   image: nginx
+   imagePullPolicy: IfNotPresent
+   resources:        
+    requests:        
+     cpu: "10m"      
+     memory: "100Mi" 
+    limits:          
+     cpu: "12m"      
+     memory: "150Mi"
+       
+# kubectl edit resourcequotas -n nepal govt-quota       ------->>> for further editing of the quota      
