@@ -1,0 +1,22 @@
+Autoscaling:----
+
+
+       metrics server (for on prem )
+       ------------------------------------------------------------------------------------------------------------------------
+       installation of metrics:---
+       # git clone https://github.com/Deepak378/metrics-server.git
+       # kubectl apply -f metrics-server/.
+       
+       # kubectl  top pods
+       # kubectl  top nodes
+       
+       autoscaling:-------------------------------------------------------------------------------------------------------------
+       a> vertical scaling:--memory/cpu/vm
+       b> horizental scaling:---   pods
+             (hpa------ horizental pod autoscaler)
+             default cpu consumption-80%
+             
+# kubectl  get hpa
+# kubectl scale deployment dep1 --replicas 10    --------->>> manual scaling
+# kubectl autoscale deployment dep1 --min 2 --max 20 --cpu-percent 70    -------->>> auto scaling
+# kubectl delete hpa dep1 
