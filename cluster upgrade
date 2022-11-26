@@ -1,0 +1,43 @@
+steps for upgradation----
+1> # kubectl  cordon master
+2> # kubectl drain master --ignore-daemonsets --delete-emptydir-data --force  (step 1 & 2 are common for both centos & debian)
+
+n master node   (for debian or ubuntu)
+---------------
+3> #apt-mark unhold kubeadm  kubectl kubelet
+
+4> #kubeadm upgrade plan
+5> # apt-get update -y && apt-get upgrade kubectl=1.25.4-00 kubelet=1.25.4-00 kubeadm=1.25.4-00 -y
+
+# yum  update -y && yum  upgrade kubectl=1.25.4-00 kubelet=1.25.4-00 kubeadm=1.25.4-00 -y
+
+
+Steps for centos:---
+1> # kubectl  cordon master
+2> # kubectl drain master --ignore-daemonsets --delete-emptydir-data --force  (step 1 & 2 are common for both centos & debian)
+3>  #kubeadm upgrade plan
+4>  # yum  update -y && yum  upgrade kubectl=1.25.4-00 kubelet=1.25.4-00 kubeadm=1.25.4-00 -y
+5> #systemctl restart kubelet
+6> systemctl enable kubelet
+7> #kubectl uncordon master.
+
+
+steps for debian or ubuntu:----
+=======================
+> # kubectl  cordon master
+2> # kubectl drain master --ignore-daemonsets --delete-emptydir-data --force  (step 1 & 2 are common for both centos & debian)
+3> #apt-mark unhold kubeadm  kubectl kubelet
+4>  #kubeadm upgrade plan
+5>  # apt-get update -y && apt-get upgrade kubectl=1.25.4-00 kubelet=1.25.4-00 kubeadm=1.25.4-00 -y
+6> #apt-mark hold kubeadm  kubectl kubelet
+7> #systemctl enable --now kubelet
+8> #kubectl uncordone master
+
+
+
+
+Go to worker node
+-------------------
+#apt-get install -y kubelet-1.22.0-0
+#systemctl daemon-reload
+#systemctl restart kubelet
