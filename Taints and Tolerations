@@ -1,0 +1,43 @@
+taints & tolerations:---
+-------------
+taints ----- node condition
+toleration ------ pod condition
+if taints=toleration ------> then only pod will be created in the scheduled node
+
+taints---- 
+key=value:effect
+ex:---
+fruit=apple:NoSchedule
+fruit=apple:NoExecute
+effects:---
+NoSchedule------    All existing pods will continue their operations
+NoExecute---------  All existing pods will terminate & if any pods are under replica/deployments/ statefulset --- they will be recreated in other worker node
+
+lab:--
+taints:---
+# kubectl describe nodes worker1 |less
+#kubectl taints node worker1 freuit=apple:NoSchedule
+# kubectl describe nodes worker1 |grep -i taints
+# kubectl taint node worker1 fruit-             ------->> to remove taints value
+
+
+Create pod with toleration value:---
+apiVersion: v1         
+kind: Pod              
+metadata:              
+ name: toleration-pod           
+spec:                  
+ containers:           
+ - name: xyz           
+   image: nginx
+   imagePullPolicy: IfNotPresent
+ tolerations:          
+ - key: "fruit"        
+   operator: "Equal"   
+   value: "apple"      
+   effect: "NoExecute"
+
+
+
+
+node affinity and anti-affinity
