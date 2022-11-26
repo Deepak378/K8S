@@ -1,0 +1,31 @@
+DaemonSet:---/ds
+----------------------------
+------>>> it will omne copy of pod on each worker node
+------>>>  it will ensure that pod will always run under every worker node
+----->>> if any further worker node added or remove from the cluster ---- automaticlly ds also change .
+------>>> use case --- we can use it for logging & monitoring purpose.
+
+labs:---
+--------
+# kubectl get ds
+# kubectl get daemonset
+# kubectl explain ds |less
+
+
+apiVersion: apps/v1               
+kind: DaemonSet                   
+metadata:                         
+ name: myds                       
+spec:                             
+ selector:                        
+  matchLabels:                    
+   sports: football               
+ template:                        
+  metadata:                       
+   labels:                        
+    sports: football              
+  spec:                           
+   containers:                    
+   - name: xyz                    
+     image: nginx
+     imagePullPolicy: IfNotPresent
