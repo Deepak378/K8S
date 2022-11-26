@@ -1,0 +1,36 @@
+Manual scheduling:----
+     =================
+     ------->>> in this process , we will take the discussion in which  worker  node we want to create  the pods.
+
+lab-1 (manual selection of worker node)
+====================
+apiVersion: v1                  
+kind: Pod                       
+metadata:                       
+ name: manual-pod               
+spec:                           
+ containers:                    
+ - name: xyz                    
+   image: nginx
+   imagePullPolicy: IfNotPresent
+ nodeName: worker1
+
+
+lab-2 (NodeSelector)  ------ create pod on the basis of worker node labels.
+
+# kubectl get nodes --show-labels 
+# kubectl  label nodes worker1 disk=ssd
+# kubectl get nodes --show-labels | grep -i disk=ssd
+# kubectl  label nodes worker1 disk-
+
+apiVersion: v1
+kind: Pod
+metadata:
+ name: test-pod                 
+spec: 
+ containers:  
+ - name: xyz  
+   image: nginx
+   imagePullPolicy: IfNotPresent
+ nodeSelector:
+  disk: ssd
