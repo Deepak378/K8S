@@ -1,0 +1,62 @@
+1> put hostname with ip mapping in /etc/hosts file in all three machine
+
+2> disable swap & firewalld
+  in production without stop firewalld add port no--- search in google "kubernetes components ports"
+
+3> we have already configured kubernetes.repo & crio.repo under /etc/yum.repos.d
+
+     note:--- for new machine:----
+              search---- cri-o in google---
+              kubeadm  install cluster  ----- in google------   open first page--- select "installing kubeadm"
+                  
+
+4> install & start cri-o (in all machines)
+--------------------------------
+ #yum install cri-o* -y
+ #systemctl enable --now crio
+
+5> install kubectl kubeadm & kubelet (in all machines)
+ #yum install kubectl* kubeadm*  kubelet* -y
+
+
+
+6> start kubelet service:--- (in all machines)
+===============================
+
+# systemctl enable kubelet
+#systemctl start kubelet
+
+7>Run the following command in master node:--
+==============================================
+#kubeadm init --pod-network-cidr=10.244.0.0/16  ----------- to define the ip range for pod
+                                                     if  calico will be installed --it will give ip to pod
+                                                     from this range.
+
+If face any issue:--- to solve that:---
+#kubeadm reset
+#systemctl restart kubelet
+#systemctl enable kubelet
+
+#copy three commands from the output & paste it. (only on master node) 
+#now copy join commands from the output of kubeadm init command:---  (paste this command in worker1 & worker2 only)
+
+8> install calico (Only  on master node):---
+========================================
+
+to get that link:---  open google--- "calico network kubernetes install"---- open 1st link
+#wget http://raw.githubusercontent.com/projectcalico/calico/v3.24.0/manifests/calico.yaml
+
+now open calico.yaml & replce docker.io to quay.io in the entire file
+#vim ~/calico.yml
+
+replace docker.io ---- to--- quay.io
+:%s/docker.io/quay.io/g
+
+****note:---  from nov-2020--we can download 200 images per public ip in 6 hours from Docker hub---- limitation
+
+Now install calico---
+#kubectl apply -f calico.yaml
+
+#kubectl get nodes  ------------------ to check the nodes in the cluster
+#kubectl get pods -A ------- to know all the pods including kubernets clusters pods 
+
