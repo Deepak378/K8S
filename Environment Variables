@@ -1,0 +1,112 @@
+------>> it a concept, by which we can inject variable & values into the new pod during its creation.
+------->>>  types:---
+              a> PlainKey-------->>> variables & values will be in the same yml file by which we will create the pod. all the varibales & values  are in text format
+              b> configMap
+              c> Secret
+
+MYSQL_USER     ------>  to create user a/c
+MYSQL_PASSWORD  ---------> to create user password
+MYSQL_ROOT_PASSWORD----------> to set user root password
+MYSQL_DATABASE     ----------> to create a new database
+
+
+
+
+
+lab:----- 
+plainKey:---
+
+apiVersion: v1    
+kind: Pod         
+metadata:         
+ name: my-plain-data-pod
+spec:             
+ containers:      
+ - name: xyz      
+   image: mysql
+   imagePullPolicy: IfNotPresent
+   env:           
+   - name: MYSQL_USER
+     value: deeps  
+                  
+   - name: MYSQL_PASSWORD
+     value: Deepak@123
+                  
+   - name: MYSQL_ROOT_PASSWORD
+     value: deepak
+                  
+   - name: MYSQL_DATABASE
+     value: india
+     
+     To check the variables & values:---
+     ------------------
+     # kubectl  exec -it my-plain-data-pod /bin/bash
+      env
+      # mysql -u deeps -p
+       show databases;
+       
+       
+       
+       
+       configMap/cm:----- (dictionary will be in the text format)
+       -----------------
+       labs:---
+       #kubectl get cm
+       # kubectl create cm training-cm --from-literal=MYSQL_USER=deeps --from-literal=MYSQL_PASSWORD=Deepak@123 --from-literal=MYSQL_ROOT_PASSWORD=deepak --from-literal=MYSQL_DATABASE=world-cup
+       
+       # kubectl describe cm training-cm | less
+       
+apiVersion: v1          
+kind: Pod               
+metadata:               
+ name: training-cm-pod          
+spec:                   
+ containers:            
+ - name: xyz            
+   image: mysql
+   imagePullPolicy: IfNotPresent
+   envFrom:             
+   - configMapRef:      
+      name: training-cm
+
+       
+       
+       
+       
+       secret:---  (dictionary will be in the base64 encrypted format)
+       --------------------------
+       #kubect get secrets
+       # kubectl create secret generic training-sec --from-literal=MYSQL_USER=deeps --from-literal=MYSQL_PASSWORD=Deepak@123 --from-literal=MYSQL_ROOT_PASSWORD=deepak --from-literal=MYSQL_DATABASE=world-cup
+       
+       # kubectl  describe secrets training-sec | less
+       
+       
+apiVersion: v1           
+kind: Pod                
+metadata:                
+ name: training-secret-pod
+spec:                    
+ containers:              
+ - name: xyz             
+   image: mysql
+   imagePullPolicy: IfNotPresent
+   envFrom:              
+   - secretRef:          
+      name: training-sec
+      
+      To check :---
+      =========
+      #kubectl exec -it training-secret-pod /bin/bash
+      #env     ------>> you will be able to see all the variables
+      #mysql -u  deeps -p     -------> try to login with this user a/c
+      
+      #show databases;
+      
+      
+
+To know the values of the variables:---
+--------------
+# kubectl edit secrets training-sec
+
+# echo cmVkaGF0QDEyMw== | base64 -d
+# echo cmVkaGF0QDEyMw== | base64 -d
