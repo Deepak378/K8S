@@ -5,7 +5,8 @@ security:-
               There are two types a/c can be created in k8s
               a> service a/c:-
               It responsible for resource authentication form api server.
-                 ------>> by default one sa will be created in every ns known as default sa ---it is responsible for resource authentication of that ns  from  api server
+                 ------>> by default one sa will be created in every ns known as default sa 
+                          ---it is responsible for resource authentication of that ns  from  api server
                  ------>> if it is required, we can create new sa & attech new resource with this new sa.
            
            
@@ -33,7 +34,7 @@ metadata:
 spec:                           
  containers:                    
  - name: xyz                    
-   image: quay.io/gauravkumar9130/mywebapp
+   image: nginx
    imagePullpolicy: IfNotPresent
  serviceAccountName: kolkata
                                         
@@ -69,28 +70,34 @@ spec:
   spec:
    containers:
    - name: xyz
-     image: quay.io/gauravkumar9130/mywebapp
+     image: nginx
      imagePullPolicy: IfNotPresent
    serviceAccountName: teacher
   -----------------------------------------------------------------------------------------------------------------------------------------------------------                                      
               b> user a/c:---
+  -----------------------------------------------------------------------------------------------------------------------------------------------------------
               To create u/a:--
-              # git clone https://github.com/gauravkumar9130/kube-user
+              
+             clone the script and copy to a new directory and give permission and execute the script.
+             
+              # git clone https://github.com/Deepak378/kube-user
               # cd kube-user/
               # chmod +x user_script.sh
-              # mkdir ~/pallvi
-              # cp user_script.sh ~/pallvi/
-               # cd ~/pallvi/
+              # mkdir ~/deepak
+              # cp user_script.sh ~/deepak/
+              
+              check your network interface and update the script accordingly.
+              example--"myipaddress=`ifconfig | grep -A 1 ens192 | tail -1 | awk '{print $2}'`"----------->here my n/w interface was ens192
+              
+               # cd ~/deepak/
                ./user_script.sh
               
-              
-              
-              
-              
-         2> RBAC (role based access control):------
+                         
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------              
+         2> RBAC (role based access control):-
          To assign privilege to u/a & s/a ---- so that they can do activity in k8s cluster.
          
-         Area------
+         Area--
          a> namespace wide:---
              role:--   
                  verb:---  list of task
@@ -105,7 +112,7 @@ spec:
              
              rolebinding:--
              # kubectl get rolebinding -n lucknow 
-             # kubectl  create rolebinding rolebind1 --role role1  -n lucknow --user pallavi
+             # kubectl  create rolebinding rolebind1 --role role1  -n lucknow --user deepak
              # kubectl  create rolebinding rolebind1 --role role1  -n lucknow --serviceaccount lucknow:default
              # kubectl  describe rolebindings.rbac.authorization.k8s.io -n lucknow rolebind1 
 
@@ -121,13 +128,13 @@ spec:
               
               labs:---
               # kubectl get clusterrole|less
-              # kubectl create clusterrolebinding clusterbind1 --clusterrole cluster-admin --user pallavi
+              # kubectl create clusterrolebinding clusterbind1 --clusterrole cluster-admin --user deepak
 
               # kubectl create clusterrolebinding clusterbind1 --clusterrole cluster-admin --serviceaccount kolkata:defualt
               To create customized clusterrole:---
               # kubectl create clusterrole clusterrole1 --verb create,delete,get,list --resource namespaces,pods,services 
-              # kubectl create clusterrolebinding clusterrolebind1 --clusterrole clusterrole1 --user pallavi
+              # kubectl create clusterrolebinding clusterrolebind1 --clusterrole clusterrole1 --user deepak
 
 
-# kubectl auth can-i create ns --as pallavi
+# kubectl auth can-i create ns --as deepak
 # kubectl auth can-i create ns 
