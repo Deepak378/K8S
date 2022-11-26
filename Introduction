@@ -1,0 +1,23 @@
+WHAT IS CONTAINER ORCHESTRATION:---
+       Container orchestration automates the deployment, management, scaling, and networkingof  containers. Enterprises that need to deploy and manage hundreds or 						 thousands of Linux containers so in this case we don’t want downtime so container orchestration will give this  facility.
+       
+What is k8s?
+       Kubernetes is an open source container orchestration platform that automates many of the manual processes involved in deploying, managing and scaling 									 containerized applications   
+       
+Some imp info about k8s--- 
+       •Open-source cluster management tool
+			 •Managed by Cloud Native Computing Foundation (CNCF); originally created by Google
+			 •Under active deployment by a well-supported community.  Kubernetes.io
+			 •Can run on both bare metal and on various cloud providers.      
+			 
+ k8s with support:---
+ -----------------------------
+ open-shift  ------- Redhat
+ Rancher-------- SUSE
+ Tanzu  -------- VMWARE
+ 
+ 
+ k8s in cloud:---
+ AKS-------- Azure
+ EKS----- aws
+ GKE---- google
