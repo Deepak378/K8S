@@ -1,0 +1,76 @@
+Replica:----
+==========
+------>>>> Group of pods 
+------>>>>  it will always maintain the desired state
+------>>>> types
+a> ReplicationController/rc-------- old concept  -----  >>> it can work only on equity based selector (one key with one value)
+b> ReplicaSet/ rs  ------------- new concept ---------->>>  it can work both on equity as well as set based selector (one key with one value as well as one key with multiple values)
+
+labs:---
+ReplicaSet with equity based selector:--
+# kubectl get replicaset
+# kubectl get rs
+
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+ name: myreplica
+spec:
+ replicas: 6
+ selector:
+  matchLabels:      #it is used only for equity based selector
+   flower: lily
+ template:          #it is for the new pod  
+  metadata:
+   labels:
+    flower: lily
+  spec:
+   containers:
+   - name: xyz
+     image: nginx
+     imagePullPolicy: IfNotPresent
+   
+# kubectl get rs  -o wide
+# kubectl  describe rs myreplica |less
+
+scaling:---
+--------autoscaling:---
+------- manual scaling:----
+
+---- manual scaling:---
+# kubectl scale rs myreplica --replicas 15
+
+labs:--
+# kubectl get nodes
+# kubectl cordon worker2 ---------------> for replica testing
+# kubectl drain worker2 --ignore-daemonsets --delete-emptydir-data --force 
+   now do all your schedule maintenence task in worker2
+   
+# kubectl uncordon worker2      ------>>> to make this worker node once again online
+ 
+  
+Set based replica:---
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+ name: set-replica
+spec:
+ replicas: 6
+ selector:
+  matchExpressions:        #it will be only for set based replica
+  - key: fruit
+    operator: In
+    values:
+    - apple
+    - guava
+    - banana
+ template:
+  metadata:
+   labels:
+    fruit: banana
+  spec:
+   containers:
+   - name: xyz
+     image: nginx
+     imagePullPolicy: IfNotPresent
+
