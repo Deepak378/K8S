@@ -1,0 +1,133 @@
+security:-
+       
+         1> Types of a/c & their uses:
+         -------------------------------------------------------------------------------------------------------------------------------------------------
+              There are two types a/c can be created in k8s
+              a> service a/c:-
+              It responsible for resource authentication form api server.
+                 ------>> by default one sa will be created in every ns known as default sa ---it is responsible for resource authentication of that ns  from  api server
+                 ------>> if it is required, we can create new sa & attech new resource with this new sa.
+           
+           
+            # kubectl  get sa
+            # kubectl describe pods -n india pod1 |less
+            # kubectl  explain sa | less
+  
+  
+apiVersion: v1    
+kind: ServiceAccount
+metadata:         
+ name: kolkata    
+ namespace: india
+
+
+How to attach a sa with a new resource:---
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+apiVersion: v1                  
+kind: Pod                       
+metadata:                       
+ name: bengal                   
+ namespace: india               
+ labels:                        
+  flower: lily                  
+spec:                           
+ containers:                    
+ - name: xyz                    
+   image: quay.io/gauravkumar9130/mywebapp
+   imagePullpolicy: IfNotPresent
+ serviceAccountName: kolkata
+                                        
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+This is namespace,service account and pod in a single yaml file :
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+apiVersion: v1
+kind: Namespace
+metadata:
+ name: college1
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+ name: teacher
+ namespace: college1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: mydeploy1
+ namespace: college1
+spec:
+ replicas: 5
+ selector:
+  matchLabels:
+   flower: marigold
+ template:
+  metadata:
+   labels:
+    flower: marigold
+  spec:
+   containers:
+   - name: xyz
+     image: quay.io/gauravkumar9130/mywebapp
+     imagePullPolicy: IfNotPresent
+   serviceAccountName: teacher
+  -----------------------------------------------------------------------------------------------------------------------------------------------------------                                      
+              b> user a/c:---
+              To create u/a:--
+              # git clone https://github.com/gauravkumar9130/kube-user
+              # cd kube-user/
+              # chmod +x user_script.sh
+              # mkdir ~/pallvi
+              # cp user_script.sh ~/pallvi/
+               # cd ~/pallvi/
+               ./user_script.sh
+              
+              
+              
+              
+              
+         2> RBAC (role based access control):------
+         To assign privilege to u/a & s/a ---- so that they can do activity in k8s cluster.
+         
+         Area------
+         a> namespace wide:---
+             role:--   
+                 verb:---  list of task
+                 resource:--  pods/services/deployments      
+             rolebinding:---
+             
+             labs:----
+             --------
+             # kubectl  get role -n lucknow
+             # kubectl create role role1 --verb create,list,get  --resource pods,services,deployments -n lucknow 
+             # kubectl describe role -n lucknow role1 
+             
+             rolebinding:--
+             # kubectl get rolebinding -n lucknow 
+             # kubectl  create rolebinding rolebind1 --role role1  -n lucknow --user pallavi
+             # kubectl  create rolebinding rolebind1 --role role1  -n lucknow --serviceaccount lucknow:default
+             # kubectl  describe rolebindings.rbac.authorization.k8s.io -n lucknow rolebind1 
+
+
+
+             
+             
+         b> cluster wide:---
+              clusterrole:---
+               verb:---  list of task
+                 resource:--  pods/services/deployments      
+              clusterrolebinding:---
+              
+              labs:---
+              # kubectl get clusterrole|less
+              # kubectl create clusterrolebinding clusterbind1 --clusterrole cluster-admin --user pallavi
+
+              # kubectl create clusterrolebinding clusterbind1 --clusterrole cluster-admin --serviceaccount kolkata:defualt
+              To create customized clusterrole:---
+              # kubectl create clusterrole clusterrole1 --verb create,delete,get,list --resource namespaces,pods,services 
+              # kubectl create clusterrolebinding clusterrolebind1 --clusterrole clusterrole1 --user pallavi
+
+
+# kubectl auth can-i create ns --as pallavi
+# kubectl auth can-i create ns 
