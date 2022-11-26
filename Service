@@ -1,0 +1,146 @@
+ service:--
+            It will help us to create a single entry point against our apps which is running inside the k8s cluster. 
+            By this entry point people with in & also outside the cluster can access our apps very easily in k8s cluster.
+            
+            Types:---
+            a> ClusterIP ----- default service type. it is used for internal access of our apps .
+            
+            b> NodePort  ------- it is used for external access of our apps .
+                                              port range ----   30000----32767
+                                              to access the application:---    <master/worker/ip_of_master/ip_of_worker>:<nodeport_no>
+                                              
+            c> LoadBalancer-----  it is used for external access of our apps .
+            
+            
+            (clusterIP)
+            ----------------
+            step-1 (create pod replica)
+            # kubectl run pod1 --image quay.io/gauravkumar9130/mywebapp --image-pull-policy IfNotPresent --labels fruit=apple
+            
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+ name: myreplica
+spec:
+ replicas: 6
+ selector:
+  matchLabels:      #it is used only for equity based selector
+   flower: lily
+ template:          #it is for the new pod
+  metadata:
+   labels:
+    flower: lily
+  spec:
+   containers:
+   - name: xyz
+     image: qnginx
+     imagePullPolicy: IfNotPresent
+
+step-2 (configure service)
+---------------------
+#kubect get svc
+#kubectl explain svc | less
+
+
+
+apiVersion: v1 
+kind: Service  
+metadata:      
+ name: my-cluster-svc
+spec:          
+ type: ClusterIP
+ ports:        
+ - targetPort: 80   #apps port no of container/pod
+   port: 80         #bind port no with clusterip  
+ selector:     
+  flower: lily
+
+  
+  
+  # kubectl  get svc  -o wide
+       
+  alternate method:---
+  # kubectl expose rs myreplica --target-port 80 --port 80 --name my-rs-cluster-svc --type ClusterIP
+
+# kubectl expose pod pod1 --target-port 80 --port 80 --name pod-clu-svc --type ClusterIP      ------------> for single pod
+
+
+
+
+
+
+(NodePort)
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(create pod/replica)
+(configure NodePort)
+
+
+apiVersion: v1    
+kind: Service     
+metadata:      
+ name: my-node-svc
+spec:          
+ type: NodePort   
+ ports:        
+ - targetPort: 80 
+   port: 80       
+   nodePort: 30000
+ selector:     
+  flower: lily
+
+or
+# through command line kubectl expose command.
+
+
+
+
+
+LoadBalancer (provide public ip against every expose micro apps)
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+(on prem k8s)
+---------------
+step-1 (installation of loadbalancer)------>>> metallb
+--------------   
+# kubectl get ns
+# wget https://raw.githubusercontent.com/metallb/metallb/v0.13.7/config/manifests/metallb-native.yaml        ------->> download that yaml file for metallb
+# kubectl apply -f metallb-native.yaml      ------->>> run that yaml file
+# kubectl  get ns     ------->>> we will be able to one new ns ------ metallb-system
+# kubectl  get pods -n metallb-system    ----->>> to check the pods that run in that ns
+
+
+step-2  (specify ip pool for loadbalancer)
+--------------------------------------------
+# kubectl  explain ipaddresspool | less
+
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool           
+metadata:                     
+ name: frist-pool             
+ namespace: metallb-system    
+spec:                         
+ addresses:                   
+ - 172.25.230.10-172.25.230.30
+
+# kubectl  get ipaddresspool -n metallb-system 
+
+step-3 (create pod/replica)    ------>> common step for onprem & cloud k8s cluster
+--------------------------------
+
+
+step-4 (expose apps against loadbalancer)
+------------------------------------
+apiVersion: v1   
+kind: Service    
+metadata:      
+ name: my-load-svc 
+spec:          
+ type: LoadBalancer
+ ports:        
+ - targetPort: 80
+   port: 80    
+ selector:     
+  flower: lily
+~        
+# kubectl expose rs myreplica --target-port 80 --port 80 --name my-load --type LoadBalancer   ------>> for replica
+# kubectl expose pod pod1 --target-port 80 --port 80 --name my-pod-load --type LoadBalancer     ------>> for pod
