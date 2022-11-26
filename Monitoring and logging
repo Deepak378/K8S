@@ -1,26 +1,28 @@
-monitoring:------
-       -------------------------
-       basic commands:---
+Monitoring:-
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+       basic commands:-
        #kubectl logs <pod_name>   ------ to check the log of a pod
        #kubectl logs <pod_name>  -c  <cont_name> ------ to check the log of a container
        
-       grafana  with prometheus:------
-       
-       ----------------------------------
+Grafana  with prometheus:-
+--------------------------------------------------------------------------------------------------------------------------------------------------------------       
        prometheus----- log collection tool
        grafana ----- monitoring dash board tool
        
-       $ git clone https://github.com/gauravkumar9130/grafana
+       $ git clone https://github.com/Deepak378/grafana
        $ cd grafana/
        $ kubectl apply -f 1-prometheus/.
        $ kubectl apply -f 2-grafana/.
-       $ kubectl  get ns     ------->>   monitoring ns will be created
+       $ kubectl  get ns     ------->>   monitoring namespace will be created
        $ kubectl get pods -n monitoring
        $ kubectl get svc -n monitoring
        
+       
+       grafana creds for first time
        user------>  admin
        pass:----->   admin
        
+       to create dashboard we are going to import a preexisting dashboard.
        dashboard----> import----> 6417----> import---->   prometheus-----> prometheus----> import
        
        
@@ -28,8 +30,8 @@ monitoring:------
        
        
        
-       kubernetes dashboard:----- (monitoring tool)
-       ---------------------------------------
+       kubernetes dashboard:--(monitoring tool)
+       ---------------------------------------------------------------------------------------------------------------------------------------------------------------
        $ wget https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.3/aio/deploy/recommended.yaml
        $ kubectl  create -f recommended.yaml
        $ kubectl  get ns    ------->>> kubernetes-dashboard   ns will be created
@@ -38,7 +40,7 @@ monitoring:------
        
        
        to login in kubernetes-dashboard  ----- we need token against sa:---
-       ----------
+       -------------------------------------------------------------------------------------------------------------------------------------------------------------
        $ kubectl get sa  -n kubernetes-dashboard
        $ kubectl describe pods -n kubernetes-dashboard kubernetes-dashboard-5bd89d988-jqdnp|less
        $ kubectl create clusterrolebinding clusterrole2  --clusterrole cluster-admin --serviceaccount kubernetes-dashboard:kubernetes-dashboard
